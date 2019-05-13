@@ -70,7 +70,7 @@ _display displayAddEventHandler ["KeyDown", {
 		};
 	};
 	if (_keysIn isEqualTo _requiredKeys) then {
-		//Execute Action code
+		//Execute Action code to see how to implement
 	};
 } forEach watchedCommands;
 
