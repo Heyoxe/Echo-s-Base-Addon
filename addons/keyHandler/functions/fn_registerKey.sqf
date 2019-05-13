@@ -52,15 +52,15 @@ _display displayAddEventHandler ["KeyDown", {
 
 //if you press 2 (and even 3!) keys simultaneously, they will have the same "timestamp"
 //Doulbe tap --> < 0.5sec
-
+/*
 [[29	,29		,29		,29		,29		,29		,29		,29		,1],
 [7082.9	,7083.09,7085.74,7085.96,7090.41,7090.73,7092.94,7094.32,7095.13]]
 7083.09 - 7082.9 = 0.189941
 7085.96 - 7085.74 = 0.219727
 7090.73 - 7090.41 = 0.319824
-7094.32 - 7092.94 = 1.37988
+7094.32 - 7092.94 = 1.37988*/
 
-
+/*
 {
 	_tempBool = 0;
 	_tempNumb = {(typeName _x) isEqualTo "SCALAR"} count _x;
@@ -73,7 +73,7 @@ _display displayAddEventHandler ["KeyDown", {
 		//Execute Action code to see how to implement
 	};
 } forEach watchedCommands;
-
+*/
 
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 {
