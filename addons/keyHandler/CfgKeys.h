@@ -10,7 +10,7 @@ class EBA_keysConfig_M {
                 defaultKeys[] = {{"RIGHT CTRL", "E"}, {"H", "HOLD"}};
             };
             class openMenu {
-                name = "Open Menu";
+                name = "Open Menu 2";
                 tooltip = "Open ESE's Menu";
                 script = "";
                 defaultKeys[] = {{"RIGHT CTRL", "RIGHT ALT", "R"}, {"R", "E"}};
