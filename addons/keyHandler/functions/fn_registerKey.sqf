@@ -82,7 +82,36 @@ _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 	systemChat format ["========== %1 ==========", diag_tickTime];
 	systemChat str (getText (_config/"name"));
 	{
-		systemChat format ["%1 (%2) --> %3", getText (_x/"name"), getText (_x/"tooltip"), getArray (_x/"defaultKeys")];
+        _keys = getArray (_x/"defaultKeys");
+        {
+            _temp = _x;
+            _tempKeys sort true;
+            _tempPressed = _pressedKeys;
+            if (_temp in )
+
+        } forEach _keys;
+		//systemChat format ["%1 (%2) --> %3", getText (_x/"name"), getText (_x/"tooltip"), getArray (_x/"defaultKeys")];
 	} forEach _actionList;
 } forEach _keysConfigs;
 
+ON_KEY_PRESSED {
+    {
+        _timestamp = 0;
+        {
+            if (_keyCount => 2) then {
+                {
+                    _temp = [];
+                    _temp pushBackUnique _x;
+                } forEach %PRESSED_KEYS%#1;
+                if !(_temp isEqualTo (count (%PRESSED_KEYS#1))) exitWith {};
+            };
+        } forEach %REGISTERED_KEY%;
+    } forEach %REGISTERED_ACTIONS%;
+};
+
+
+
+1. 
+
+Quand une touche est pressee,
+    Pour chaque %ACTIONS%
