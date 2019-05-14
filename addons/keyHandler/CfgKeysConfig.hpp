@@ -1,3 +1,5 @@
+#include "\a3\ui_f\hpp\definedikcodes.inc"
+
 class EBA_keysConfig_M {
     class ESE_keysConfig {
         name = "Echo's Sandbox Everywhere";
@@ -6,23 +8,26 @@ class EBA_keysConfig_M {
             class openMenu {
                 name = "Open Menu";
                 tooltip = "Open ESE's Menu";
-                script = "";
-                defaultKeys[] = {{"RIGHT CTRL", "E"}, {"HOLD", "H"}};
+                script = "systemChat ""openMenu""";
+                defaultKeys[] = {{DIK_RCONTROL, DIK_A}, {"HOLD", DIK_B}};
             };
-            class openMenu {
+            class openMenu2 {
                 name = "Open Menu 2";
                 tooltip = "Open ESE's Menu";
-                script = "";
-                defaultKeys[] = {{"RIGHT CTRL", "RIGHT ALT", "R"}, {"R", "E"}};
+                script = "systemChat ""openMenu2""";
+                defaultKeys[] = {{DIK_RCONTROL, DIK_RALT, DIK_C}, {DIK_D, DIK_E}};
             };
-            class openMenu {
+            class openMenu3 {
                 name = "Open Menu 3";
                 tooltip = "Open ESE's Menu";
-                script = "";
-                defaultKeys[] = {{"E"}, {"DOUBLE", "H"}};
+                script = "systemChat ""openMenu3""";
+                defaultKeys[] = {{DIK_F}, {"DOUBLE", DIK_G}};
             };
         };
     };
+};
+
+    /*
     class CBA_A3_keysConfig {
         name = "CBA A3";
         tooltip = "Community Base Addon";
@@ -47,4 +52,4 @@ class EBA_keysConfig_M {
             };
         };
     };
-};
+    */

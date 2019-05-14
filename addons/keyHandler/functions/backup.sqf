@@ -67,7 +67,7 @@ EBA_fnc_processKeys = {
     waitUntil {!isNull _display};
     _display displayAddEventHandler ["KeyDown", {
         _key = (_this#1);
-        if (_key > 255) exitWith {systemChat format ["%1: Unrecognized key...", diag_tickTime]};
+        if (_key > 255) exitWith {}; //Unrecognized key handling
         _value = (keyDownArray#_key);
         keyDownArray set [_key, _value + 1];
 
@@ -81,7 +81,7 @@ EBA_fnc_processKeys = {
 
     _display displayAddEventHandler ["KeyUp", {
         _key = (_this#1);
-        if (_key > 255) exitWith {systemChat format ["%1: Unrecognized key...", diag_tickTime]};
+        if (_key > 255) exitWith {}; //Unrecognized key handling
         _value = (keyDownArray#_key);
         keyDownArray set [_key, 0];
 
