@@ -23,10 +23,28 @@ _keyDownArray_before = EBA_keyHandler_keyDownArray_before;
                 _mode = (_key#0);
                 _key = (_key#1);
             };
-            switch (_mode) do {
+            switch _mode do {
                 case "HOLD": {
-                    if ((_keyDownArray#_key) > 1) then {
+                    _released = false;
+                    {
+                        if ((_keyDownArray_before#_x) isEqualTo 0) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
+                                _boolNumb = _boolNumb + 1;
+                        };
+                    } forEach _key;
+                    if !(_boolNumb isEqualTo 0) then {
+                        _released = true;
+                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
+                    };
+                    _boolNumb = 0;
+                    {
+                        if ((_keyDownArray#_x) > 1) then {
+                            _boolNumb = _boolNumb + 1;
+                        };
+                    } forEach _key;
+                    systemChat format ["%1: Target: %2 |----| Value: %3 |----| %4 |----| %5", round diag_tickTime, _targetBool, _boolNumb, _released, !_executed];
+                    if ((_boolNumb isEqualTo _targetBool) && (!_executed && !_released)) then {
                         [] call (compile _script);
+                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
                     };
                 };
                 case "DOUBLE": {
@@ -34,6 +52,11 @@ _keyDownArray_before = EBA_keyHandler_keyDownArray_before;
                         if ((diag_tickTime - (_keyUpArray#(_key + 256))) <= 0.5) then {
                             [] call (compile _script);
                         };
+                    };
+                };
+                case "CONTINUOUS": {
+                   if ((_keyDownArray#_key) > 1) then {
+                        [] call (compile _script);
                     };
                 };
                 default {
@@ -45,24 +68,22 @@ _keyDownArray_before = EBA_keyHandler_keyDownArray_before;
                     } forEach _key;
                     if !(_boolNumb isEqualTo 0) then {
                         _released = true;
+                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
                     };
                     _boolNumb = 0;
                     {
-                        if (_executed && !_released) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
-                            if ((_keyDownArray#_x) > 0) then {
-                                _boolNumb = _boolNumb + 1;
-                            };
+                        if ((_keyDownArray#_x) > 0) then {
+                            _boolNumb = _boolNumb + 1;
                         };
                     } forEach _key;
-                    systemChat format ["%1 --- %2", !_executed, _released];
-                    if (_boolNumb isEqualTo _targetBool) then {
+                    systemChat format ["%1: Target: %2 |----| Value: %3 |----| %4 |----| %5", round diag_tickTime, _targetBool, _boolNumb, _released, !_executed];
+                    if ((_boolNumb isEqualTo _targetBool) && (!_executed && !_released)) then {
                         [] call (compile _script);
                         [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
                     };
                 };
             };
         } forEach _keyCombinaison;
-        hint str _forEachIndex;
     } forEach _actionList;
 } forEach _keysConfigs;
 EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;
