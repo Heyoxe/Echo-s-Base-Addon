@@ -13,5 +13,5 @@ class CfgPatches {
 	};
 };
 
-#include "CfgFunction.hpp"
-#include "CfgKeysConfig.hpp"
+#include "CfgFunctions.h"
+#include "CfgKeysConfig.h"
