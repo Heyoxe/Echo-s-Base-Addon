@@ -1,12 +1,14 @@
 EBA_keyHandler_keyDownArray = []; 
+EBA_keyHandler_keyDownArray_before = [];
 EBA_keyHandler_keyUpArray = []; 
 for "_i" from 0 to 512 do {
     EBA_keyHandler_keyDownArray pushBack 0;
+	EBA_keyHandler_keyDownArray_before pushBack 0;
     EBA_keyHandler_keyUpArray pushBack 0;
 };
 
-_display = (findDisplay 46);
-waitUntil {!isNull _display};
+waitUntil {!isNull findDisplay 46};
+_display = findDisplay 46;
 
 _display displayAddEventHandler ["KeyDown", {
 	_key = (_this#1);
