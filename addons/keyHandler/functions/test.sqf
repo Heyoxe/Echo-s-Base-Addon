@@ -55,14 +55,11 @@ _display = findDisplay 46;
 
 EBA_keyHandler_keysArray = [];
 for "_i" from 0 to 256 do {
-	_now = [];
-	_before = [];
-	_lastState = [];
-	_now pushBack [false, false, false, true, 0];
-	_before pushBack [false, false, false, true, 0];
-	_lastState pushBack [false, false, false, true, 0];
-	_pushBack = [_now, _before, _lastState];
-    EBA_keyHandler_keysArray pushBack [_pushBack];
+	_now = [false, false, false, true, 0];
+	_before = [false, false, false, true, 0];
+	_last = [false, false, false, true, 0];
+	_pushBack = [_now, _before, _last];
+    EBA_keyHandler_keysArray pushBack _pushBack;
 };
 
 _display displayRemoveAllEventHandlers "KeyDown";
@@ -72,43 +69,39 @@ _display displayAddEventHandler ["KeyDown", {
 	_key = (_this#1);
 	if (_key > 255) exitWith {};
 
-	_before = EBA_keyHandler_keysArray#_key#2;
-	_wasPressed = _before#0;
-	_wasDoubled = _before#1;
-	_wasHolded = _before#2;
-	_wasUp = _before#3;
-	_whenWasIt = _before#4;
+	_before = EBA_keyHandler_keysArray#_key#0;
+	_before params ["_beforePressed", "_beforeDoubled", "_beforeHolded", "_beforeUp", "_beforeTime"]; //Alway after-UP
 
-	_isPressed = true;
-	_isDoubled = [false, true] select (_isPressed && _wasUp && _wasPressed && !_wasHolded && !_wasDoubled && ((diag_tickTime - _whenWasIt) < 0.5));
-	_isHolded = [false, true] select (_isPressed && _wasPressed && !_wasUp);
-	_isUp = false;
-	_whenIsThis = diag_tickTime;
+	_last = EBA_keyHandler_keysArray#_key#1;
+	_last params ["_lastPressed", "_lastDoubled", "_lastHolded", "_lastUp", "_lastTime"];
 
-	_now = [_isPressed, _isDoubled, _isHolded, _isUp, _whenIsThis];
-	EBA_keyHandler_keysArray set [_key, [_now, _before]];
-	if (_isPressed && !_isHolded && !_isDoubled) then {
-		systemChat format ["%1: %2 is Pressed!", diag_tickTime, keyName _key, _isPressed];
-	};
-	if (_isDoubled) then {
-		systemChat format ["%1: %2 is Doubled!", diag_tickTime, keyName _key, _isHolded];
-	};
-	if (_isHolded) then {
-		systemChat format ["%1: %2 is Held!", diag_tickTime, keyName _key, _isHolded];
-	};
+	_nowPressed = true;
+	_nowDoubled = (_nowPressed && _beforeUp && !_lastDoubled && !_lastHolded && ((diag_tickTime - _lastTime) < 0.5));
+	_nowHolded = (_nowPressed && _lastPressed && !_beforeUp);
+	_nowUp = false;
+	_nowTime = diag_tickTime;
+
+	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
+	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 }];
 
 _display displayAddEventHandler ["KeyUp", {
 	_key = (_this#1);
 	if (_key > 255) exitWith {};
-	_before = EBA_keyHandler_keysArray#_key#1;
-	_isPressed = false;
-	_isDoubled = false;
-	_isHolded = false;
-	_isUp = true;
-	_whenIsThis = diag_tickTime;
 
-	_now = [_isPressed, _isDoubled, _isHolded, _isUp, _whenIsThis];
-	EBA_keyHandler_keysArray set [_key, [_now, _before]];
+	_before = EBA_keyHandler_keysArray#_key#0;
+	_before params ["_beforePressed", "_beforeDoubled", "_beforeHolded", "_beforeUp", "_beforeTime"]; //Alway after-UP
+
+	_last = EBA_keyHandler_keysArray#_key#1;
+	_last params ["_lastPressed", "_lastDoubled", "_lastHolded", "_lastUp", "_lastTime"];
+
+	_nowPressed = false;
+	_nowDoubled = false;
+	_nowHolded = false;
+	_nowUp = true;
+	_nowTime = diag_tickTime;
+
+	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
+	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 }];
 };
