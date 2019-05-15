@@ -1,79 +1,40 @@
-params ["_keyDownArray", "_keyUpArray"];
+/*EBA_keyHandler_keyDownArray = []; 
+EBA_keyHandler_keyDownArray_before = [];
+EBA_keyHandler_keyUpArray = []; 
+for "_i" from 0 to 512 do {
+    EBA_keyHandler_keyDownArray pushBack 0;
+	EBA_keyHandler_keyDownArray_before pushBack 0;
+    EBA_keyHandler_keyUpArray pushBack 0;
+};
 
-_keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
-_keyDownArray_before = EBA_keyHandler_keyDownArray_before;
-{
-    _config = _x;
-    _actionList = "true" configClasses (_config/"actions");
-    _addonName = configName _config;
-    {
-        _actionName = configName _x;
-        if (isNil (format ["EBA_keyHandler_%1_%2_executed", _addonName, _actionName])) then {
-            [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-        };
-        _executed = [] call (compile (format ["EBA_keyHandler_%1_%2_executed", _addonName, _actionName]));
-        _keyCombinaison = (getArray (_x/"defaultKeys"));
-        _script = (getText (_x/"script"));
-        {
-            _key = _x;
-            _mode = "PRESS";
-            _boolNumb = 0;
-            _targetBool = (count _key);
-            if ((typeName (_key#0)) isEqualTo "STRING") then {
-                _mode = (_key#0);
-                _key = (_key#1);
-            };
-            switch _mode do {
-                case "HOLD": {
-                    _released = false;
-					if ((_keyDownArray_before#_key) isEqualTo 0) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
-							_boolNumb = _boolNumb + 1;
-					};
-                    if !(_boolNumb isEqualTo 0) then {
-                        _released = true;
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-                    };
-                    if (((_keyDownArray#_key) > 1) && (!_executed && !_released)) then {
-                        [] call (compile _script);
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
-                    };
-                };
-                case "DOUBLE": {
-                    if ((_keyUpArray#_key) > 1) then {
-                        if ((diag_tickTime - (_keyUpArray#(_key + 256))) <= 0.5) then {
-                            [] call (compile _script);
-                        };
-                    };
-                };
-                case "CONTINUOUS": {
-                    if ((_keyDownArray#_key) > 1) then {
-                        [] call (compile _script);
-                    };
-                };
-                default {
-                    _released = false;
-                    {
-                        if ((_keyDownArray_before#_x) isEqualTo 0) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
-                            _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    if !(_boolNumb isEqualTo 0) then {
-                        _released = true;
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-                    };
-                    _boolNumb = 0;
-                    {
-                        if ((_keyDownArray#_x) > 0) then {
-                            _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    if ((_boolNumb isEqualTo _targetBool) && (!_executed && !_released)) then {
-                        [] call (compile _script);
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
-                    };
-                };
-            };
-        } forEach _keyCombinaison;
-    } forEach _actionList;
-} forEach _keysConfigs;
-EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;
+waitUntil {!isNull findDisplay 46};
+_display = findDisplay 46;
+
+_display displayAddEventHandler ["KeyDown", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {}; //Unrecognized key handling
+	_value = (EBA_keyHandler_keyDownArray#_key);
+	EBA_keyHandler_keyDownArray set [_key, _value + 1];
+
+	_value = (EBA_keyHandler_keyUpArray#_key);
+	if (_value != 0) then {
+		EBA_keyHandler_keyUpArray set [_key, _value + 1];
+	};
+
+	[EBA_keyHandler_keyDownArray, EBA_keyHandler_keyUpArray] call EBA_fnc_processKeys;
+}];
+
+_display displayAddEventHandler ["KeyUp", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {}; //Unrecognized key handling
+	_value = (EBA_keyHandler_keyDownArray#_key);
+	EBA_keyHandler_keyDownArray set [_key, 0];
+
+	_value = (EBA_keyHandler_keyUpArray#_key);
+	if (_value isEqualTo 0) then {
+		EBA_keyHandler_keyUpArray set [_key, _value + 1];
+		EBA_keyHandler_keyUpArray set [(_key + 256), diag_tickTime];
+	} else {
+		EBA_keyHandler_keyUpArray set [_key,0];
+	};
+}];*/

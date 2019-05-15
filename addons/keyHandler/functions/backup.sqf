@@ -70,5 +70,67 @@ EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;
 /*
     TODO: Stop firing when pressed (works with just "F" or "RCTRL + A" but not with the Tri)
     TODO: Why on earth F can't be spammed? Forced to press another key before
-
+    [PRESSED, DOUBLED, HOLDED, isUp, timestamp]
+        PRESSED: if (_nowPressed && isUp && ((_nowTimestamp -timestemp) < 0.5)) then true;
+        DOUBLED: if (_nowPressed) then true;
+        HOLDED: if (PRESSED && _nowPressed) then true;
 */
+
+					case "HOLD": {
+						_now = (_nowArray#_x);
+						_isHolded = _now#2;
+						if (_isHolded) then {
+							[] call (compile _script);
+						};
+					};
+EBA_fnc_processKeys = {
+
+};
+
+waitUntil {!isNull findDisplay 46};
+_display = findDisplay 46;
+
+EBA_keyHandler_keysArray = []; 
+for "_i" from 0 to 256 do {
+    EBA_keyHandler_keysArray pushBack 0;
+};
+
+_display displayRemoveAllEventHandlers "KeyDown";
+_display displayRemoveAllEventHandlers "KeyUp";
+
+_display displayAddEventHandler ["KeyDown", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {}; //Unrecognized key handling
+
+    _before = (EBA_keyHandler_keysArray#_key);
+    _wasPressed = _before#0;
+    _wasDoubled = _before#1;
+    _wasHolded = _before#2;
+    _wasUp = _before#3;
+    _whenWasIt = _before#4;
+
+    _isPressed = true;
+    _isDoubled = [true, false] select (_isPressed && _wasUp && ((diag_tickTime - _whenWasIt) < 0.5));
+    _isHolded = [true, false] select (_isPressed && _wasPressed);
+    _isUp = false;
+    _whenIsThis = diag_tickTime;
+
+    _howIsItNow = [_isPressed, _isDoubled, _isHolded, _isUp, _whenIsThis];
+    EBA_keyHandler_keysArray set [_key, _howIsItNow];
+
+    [] call EBA_fnc_processKeys;
+}];
+
+_display displayAddEventHandler ["KeyDown", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {}; //Unrecognized key handling
+
+    _isPressed = false;
+    _isDoubled = false;
+    _isHolded = false;
+    _isUp = true;
+    _whenIsThis = diag_tickTime;
+
+    _howIsItNow = [_isPressed, _isDoubled, _isHolded, _isUp, _whenIsThis];
+    EBA_keyHandler_keysArray set [_key, _howIsItNow];
+}];

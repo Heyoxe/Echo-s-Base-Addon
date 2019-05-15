@@ -1,4 +1,4 @@
-params ["_keyDownArray", "_keyUpArray"];
+/*params ["_keyDownArray", "_keyUpArray"];
 
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 _keyDownArray_before = EBA_keyHandler_keyDownArray_before;
@@ -86,4 +86,4 @@ _keyDownArray_before = EBA_keyHandler_keyDownArray_before;
         } forEach _keyCombinaison;
     } forEach _actionList;
 } forEach _keysConfigs;
-EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;
+EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;*/
