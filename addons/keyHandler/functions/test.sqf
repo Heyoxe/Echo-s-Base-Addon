@@ -14,6 +14,7 @@
 EBA_fnc_processKeys = {
 params ["_EBA_keyHandler_keysArray"];
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
+_EBA_keyHandler_keyRegistery = (profileNamespace getVariable "EBA_keyHandler_keyRegistery");
 {
 	_config = _x;
 	_addonName = configName _config;
@@ -23,6 +24,10 @@ _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 		_actionName = configName _action;
 		_keyRegistery = format ["EBA_keyHandler_keyRegistery_%1_%2", _addonName, _actionName];
 		//_keyRegistery = (profileNamespace getVariable _keyRegistery);
+		//_keyRegistery = (EBA_keyHandler_keyRegistery#0) findIf {_x isEqualTo (format ["%1_%2", _addonName, _actionName])};
+
+		_keyRegister = [(_EBA_keyHandler_keyRegistery#1#_keyRegistery), nil] select (_keyRegistery isEqualTo -1); //<-- Better way
+		
 		_keyCombinaison = [([] call (compile _keyRegistery)), (getArray (_action/"defaultKeys"))] select (isNil _keyRegistery);
 		_type = (getText (_action/"type"));
 		_script = (getText (_action/"script"));

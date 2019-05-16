@@ -8,22 +8,21 @@ class EBA_keysConfig_M {
             class openMenu {
                 name = "Open Menu";
                 tooltip = "Open ESE's Menu";
-                type = "SINGLE";
-                continuousFire = false;
+                singleFire = false;
                 script = "systemChat ""openMenu""";
                 defaultKeys[] = {{DIK_RCONTROL, DIK_A}, {DIK_RCONTROL, DIK_RALT, DIK_C}, {DIK_D, DIK_E}};
             };
             class openMenu2 {
                 name = "Open Menu 2";
                 tooltip = "Open ESE's Menu";
-                continuousFire = true;
+                singleFire = false;
                 script = "systemChat ""openMenu2""";
                 defaultKeys[] = {{DIK_B}, {DIK_RCONTROL, DIK_H}};
             };
             class openMenu3 {
                 name = "Open Menu 3";
                 tooltip = "Open ESE's Menu";
-                continuousFire = false;
+                singleFire = false;
                 script = "systemChat ""openMenu3""";
                 defaultKeys[] = {{DIK_F}, {DIK_G, DIK_G}};
             };
