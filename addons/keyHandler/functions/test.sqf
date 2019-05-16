@@ -12,38 +12,32 @@
 		When hold, it fires continously? Yes
 */
 EBA_fnc_processKeys = {
-	params ["_nowArray", "_beforeArray"];
+	params ["_EBA_keyHandler_keysArray"];
 	_keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 	{
 		_config = _x;
+		_addonName = configName _config;
 		_actionList = "true" configClasses (_config/"actions");
 		{
 			_action = _x;
-			_keyCombinaison = (getArray (_action/"defaultKeys"));
+			_actionName = configName _action;
+			_keyRegistery = format ["EBA_keyHandler_keyRegistery_%1_%2", _addonName, _actionName];
+			_keyCombinaison = [([] call (compile _keyRegistery)), (getArray (_action/"defaultKeys"))] select (isNil _keyRegistery);
 			_type = (getText (_action/"type"));
 			_script = (getText (_action/"script"));
 			{
 				_keys = _x;
-				switch _type do {
-					case "HOLD": {
-						_bool = 0;
-						_target = (count _keys);
-						{
-							_key = _x;
-							_now = _nowArray#_key;
-							_isHolded = _now#2;
-							_isUp = _now#3;
-							if (_isHolded && !_isUp) then {
-								_bool = _bool + 1;
-							};						
-						} forEach _keys;
-						if (_bool isEqualTo _target) then {
-							[] call (compile _script);
-						};
-					};
-					default {};
-					};
+				_tempNum = 0;
+				if ((count _keys) > 3) exitWith {
+					systemChat format ["%1: Too much keys...", diag_tickTime];
 				};
+				{
+					_key = _x;
+					_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;
+					_nowDoubled = _EBA_keyHandler_keysArray#_key#0#1;
+					_tempNum = [0, (_tempNum + 1)] select _nowPressed;
+				} forEach _keys;
+				[] call (compile (["", _script] select (_tempNum isEqualTo (count _keys))))
 			} forEach _keyCombinaison;
 		} forEach _actionList;
 	} forEach _keysConfigs;
@@ -83,6 +77,8 @@ _display displayAddEventHandler ["KeyDown", {
 
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
 	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
+
+	[EBA_keyHandler_keysArray] call EBA_fnc_processKeys;
 }];
 
 _display displayAddEventHandler ["KeyUp", {
