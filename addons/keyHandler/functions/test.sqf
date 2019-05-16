@@ -12,35 +12,37 @@
 		When hold, it fires continously? Yes
 */
 EBA_fnc_processKeys = {
-	params ["_EBA_keyHandler_keysArray"];
-	_keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
+params ["_EBA_keyHandler_keysArray"];
+_keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
+{
+	_config = _x;
+	_addonName = configName _config;
+	_actionList = "true" configClasses (_config/"actions");
 	{
-		_config = _x;
-		_addonName = configName _config;
-		_actionList = "true" configClasses (_config/"actions");
+		_action = _x;
+		_actionName = configName _action;
+		_keyRegistery = format ["EBA_keyHandler_keyRegistery_%1_%2", _addonName, _actionName];
+		//_keyRegistery = (profileNamespace getVariable _keyRegistery);
+		_keyCombinaison = [([] call (compile _keyRegistery)), (getArray (_action/"defaultKeys"))] select (isNil _keyRegistery);
+		_type = (getText (_action/"type"));
+		_script = (getText (_action/"script"));
 		{
-			_action = _x;
-			_actionName = configName _action;
-			_keyRegistery = format ["EBA_keyHandler_keyRegistery_%1_%2", _addonName, _actionName];
-			_keyCombinaison = [([] call (compile _keyRegistery)), (getArray (_action/"defaultKeys"))] select (isNil _keyRegistery);
-			_type = (getText (_action/"type"));
-			_script = (getText (_action/"script"));
+			// SIMPLE KEY PRESS/HOLD //
+			_keys = _x;
+			_tempNum = 0;
+			if ((count _keys) > 3) exitWith {
+				systemChat format ["%1: Too much keys...", diag_tickTime];
+			};
 			{
-				_keys = _x;
-				_tempNum = 0;
-				if ((count _keys) > 3) exitWith {
-					systemChat format ["%1: Too much keys...", diag_tickTime];
-				};
-				{
-					_key = _x;
-					_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;
-					_nowDoubled = _EBA_keyHandler_keysArray#_key#0#1;
-					_tempNum = [0, (_tempNum + 1)] select _nowPressed;
-				} forEach _keys;
-				[] call (compile (["", _script] select (_tempNum isEqualTo (count _keys))))
-			} forEach _keyCombinaison;
-		} forEach _actionList;
-	} forEach _keysConfigs;
+				_key = _x;
+				_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;
+				_nowDoubled = _EBA_keyHandler_keysArray#_key#0#1;
+				_tempNum = [0, (_tempNum + 1)] select _nowPressed;
+			} forEach _keys;
+			[] call (compile (["", _script] select (_tempNum isEqualTo (count _keys))))
+		} forEach _keyCombinaison;
+	} forEach _actionList;
+} forEach _keysConfigs;
 };
 
 [] spawn {

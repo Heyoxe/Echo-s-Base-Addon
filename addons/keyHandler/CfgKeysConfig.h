@@ -30,7 +30,6 @@ class EBA_keysConfig_M {
         };
     };
 };
-
     /*
     class CBA_A3_keysConfig {
         name = "CBA A3";
