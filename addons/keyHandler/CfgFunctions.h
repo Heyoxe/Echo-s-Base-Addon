@@ -1,15 +1,15 @@
+#include "functions_defines.h"
 class CfgFunctions {
     class EBA {
         class system {
-            file = "keyHandler\functions\system";
-            class postInit {
-                postInit = 1;
-            };
+            CPATH(keyHandler,system);
+            FUNC_POST(postInit);
         };
         class keyHandling {
-            file = "keyHandler\functions\keyHandling";
-            class processKeys {};
+            CPATH(keyHandler,keyHandling);
+            FUNC_POST(processKeys);
+            FUNC_POST(parseConfig);
+            FUNC_POST(profileSafe);
         };
     };
 };
-
