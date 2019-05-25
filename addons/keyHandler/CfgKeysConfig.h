@@ -9,22 +9,36 @@ class EBA_keysConfig_M {
                 name = "Open Menu";
                 tooltip = "Open ESE's Menu";
                 singleFire = false;
-                script = "systemChat ""openMenu""";
-                defaultKeys[] = {{DIK_RCONTROL, DIK_A}, {DIK_RCONTROL, DIK_RALT, DIK_C}, {DIK_D, DIK_E}};
+                script = "systemChat format [""%1: openMenu"", diag_tickTime]";
+                defaultKeys[] = {{DIK_A}, {DIK_B, DIK_B}, {DIK_C, DIK_D}, {DIK_E, DIK_F, DIK_G}, {DIK_H, DIK_J, DIK_J}};
             };
             class openMenu2 {
                 name = "Open Menu 2";
                 tooltip = "Open ESE's Menu";
-                singleFire = false;
-                script = "systemChat ""openMenu2""";
-                defaultKeys[] = {{DIK_B}, {DIK_RCONTROL, DIK_H}};
+                singleFire = true;
+                script = "systemChat format [""%1: openMenu2"", diag_tickTime]";
+                defaultKeys[] = {{DIK_K}, {DIK_L, DIK_L}, {DIK_M, DIK_N}, {DIK_O, DIK_P, DIK_Q}, {DIK_R, DIK_S, DIK_S}};
             };
             class openMenu3 {
                 name = "Open Menu 3";
                 tooltip = "Open ESE's Menu";
                 singleFire = false;
-                script = "systemChat ""openMenu3""";
-                defaultKeys[] = {{DIK_F}, {DIK_G, DIK_G}};
+                script = "systemChat format [""%1: openMenu3"", diag_tickTime]";
+                defaultKeys[] = {{DIK_LCONTROL, DIK_RSHIFT}};
+            };
+            class openMenu4 {
+                name = "Open Menu 4";
+                tooltip = "Open ESE's Menu";
+                singleFire = false;
+                script = "systemChat format [""%1: openMenu4"", diag_tickTime]";
+                defaultKeys[] = {{DIK_LCONTROL, DIK_LSHIFT}};
+            };
+            class openMenu5 {
+                name = "Open Menu 5";
+                tooltip = "Open ESE's Menu";
+                singleFire = false;
+                script = "systemChat format [""%1: openMenu5"", diag_tickTime]";
+                defaultKeys[] = {};
             };
         };
     };

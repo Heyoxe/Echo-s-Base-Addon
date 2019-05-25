@@ -1,89 +1,124 @@
-/*params ["_keyDownArray", "_keyUpArray"];
+/*
+_EBA_keyHandler_keyRegistery = 
+[
+	[
+		"CBA_previousRail", 
+		"CBA_nextRail",
+		"ESE_keysConfig_openMenu"
+	], 
+	[
+		[
+			["LEFT_CTRL", "R", "R"], 
+			["RIGHT_CTRL", "R", "R"]
+		], 
+		[
+			["LEFT_SHIFT", "R", "R"], 
+			["RIGHT_SHIFT", "R", "R"]
+		],
+		[
+			[17]
+		]
+	]
+];
+*/
 
+EBA_fnc_processKeys = {
+params ["_EBA_keyHandler_keysArray"];
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
-_keyDownArray_before = EBA_keyHandler_keyDownArray_before;
+_EBA_keyHandler_keysRegistery = (profileNamespace getVariable "EBA_keyHandler_keyRegistery");
 {
-    _config = _x;
-    _actionList = "true" configClasses (_config/"actions");
-    _addonName = configName _config;
-    {
-        _actionName = configName _x;
-        if (isNil (format ["EBA_keyHandler_%1_%2_executed", _addonName, _actionName])) then {
-            [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-        };
-        _executed = [] call (compile (format ["EBA_keyHandler_%1_%2_executed", _addonName, _actionName]));
-        _keyCombinaison = (getArray (_x/"defaultKeys"));
-        _script = (getText (_x/"script"));
-        {
-            _key = _x;
-            _mode = "PRESS";
-            _boolNumb = 0;
-            _targetBool = (count _key);
-            if ((typeName (_key#0)) isEqualTo "STRING") then {
-                _mode = (_key#0);
-                _key = (_key#1);
-            };
-            switch _mode do {
-                case "HOLD": {
-                    _released = false;
-                    {
-                        if ((_keyDownArray_before#_x) isEqualTo 0) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
-                                _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    if !(_boolNumb isEqualTo 0) then {
-                        _released = true;
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-                    };
-                    _boolNumb = 0;
-                    {
-                        if ((_keyDownArray#_x) > 1) then {
-                            _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    systemChat format ["%1: Target: %2 |----| Value: %3 |----| %4 |----| %5", round diag_tickTime, _targetBool, _boolNumb, _released, !_executed];
-                    if ((_boolNumb isEqualTo _targetBool) && (!_executed && !_released)) then {
-                        [] call (compile _script);
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
-                    };
-                };
-                case "DOUBLE": {
-                    if ((_keyUpArray#_key) > 1) then {
-                        if ((diag_tickTime - (_keyUpArray#(_key + 256))) <= 0.5) then {
-                            [] call (compile _script);
-                        };
-                    };
-                };
-                case "CONTINUOUS": {
-                   if ((_keyDownArray#_key) > 1) then {
-                        [] call (compile _script);
-                    };
-                };
-                default {
-                    _released = false;
-                    {
-                        if ((_keyDownArray_before#_x) isEqualTo 0) then { //AND NONE OF THEY KEY HAS BEEN RELEASED
-                                _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    if !(_boolNumb isEqualTo 0) then {
-                        _released = true;
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = false", _addonName, _actionName]));
-                    };
-                    _boolNumb = 0;
-                    {
-                        if ((_keyDownArray#_x) > 0) then {
-                            _boolNumb = _boolNumb + 1;
-                        };
-                    } forEach _key;
-                    systemChat format ["%1: Target: %2 |----| Value: %3 |----| %4 |----| %5", round diag_tickTime, _targetBool, _boolNumb, _released, !_executed];
-                    if ((_boolNumb isEqualTo _targetBool) && (!_executed && !_released)) then {
-                        [] call (compile _script);
-                        [] call (compile (format ["EBA_keyHandler_%1_%2_executed = true", _addonName, _actionName]));
-                    };
-                };
-            };
-        } forEach _keyCombinaison;
-    } forEach _actionList;
+	_config = _x;
+	_addonName = configName _config;
+	_actionList = "true" configClasses (_config/"actions");
+	{
+		_action = _x;
+		_actionName = configName _action;
+		_keyRegistery = (_EBA_keyHandler_keysRegistery#0) findIf {_x isEqualTo (format ["%1_%2", _addonName, _actionName])};
+		_keyRegistery = [{_EBA_keyHandler_keysRegistery#1#_keyRegistery}, {getArray (_action/"defaultKeys")}] select (_keyRegistery isEqualTo -1);
+		_keyCombinaison = call _keyRegistery;
+		_singleFire = [false, true] select (getNumber (_action/"singleFire"));
+		_script = (getText (_action/"script"));
+		{
+			_keys = _x;
+			_tempNum = 0;
+			_consolidatedArray = _keys call BIS_fnc_consolidateArray;
+			_doubledKeyIndex = (_consolidatedArray findIf {_x#1 isEqualTo 2});
+			_doubledKey = [{_consolidatedArray#_doubledKeyIndex#0}, {0}] select (_doubledKeyIndex isEqualTo -1);
+			_doubledKey = call _doubledKey;
+			{
+				_key = _x;
+				_beforeUp = _EBA_keyHandler_keysArray#_key#1#3;
+				_tempNum = [(_tempNum + 1), _tempNum] select _beforePressed;
+			} forEach _keys;
+			_extraConditions = [false, true] select (_tempNum != 0);
+			_tempNum = 0;
+			if ((count _keys) > 3) exitWith {
+				systemChat format ["%1: Too much keys, processing skipped...", diag_tickTime];
+			};
+			{
+				_key = _x;
+				_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;
+				_nowDoubled = _EBA_keyHandler_keysArray#_key#0#1;
+				_baseConditions = [_nowPressed, (_nowPressed && _nowDoubled)] select (_doubledKey isEqualTo _key);
+				_conditions = [_baseConditions, (_baseConditions && _extraConditions)] select _singleFire;
+				_tempNum = [_tempNum, (_tempNum + 1)] select _conditions;
+			} forEach _keys;
+			[] call (compile (["", _script] select (_tempNum isEqualTo (count _keys))));
+		} forEach _keyCombinaison;
+	} forEach _actionList;
 } forEach _keysConfigs;
-EBA_keyHandler_keyDownArray_before = EBA_keyHandler_keyDownArray;*/
+};
+
+[] spawn {
+waitUntil {!isNull findDisplay 46};
+_display = findDisplay 46;
+
+EBA_keyHandler_keysArray = [];
+for "_i" from 0 to 256 do {
+	_now = [false, false, false, true, 0];
+	_before = [false, false, false, true, 0];
+	_last = [false, false, false, true, 0];
+	_pushBack = [_now, _before, _last];
+    EBA_keyHandler_keysArray pushBack _pushBack;
+};
+
+_display displayRemoveAllEventHandlers "KeyDown";
+_display displayRemoveAllEventHandlers "KeyUp";
+
+_display displayAddEventHandler ["KeyDown", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {};
+	_before = EBA_keyHandler_keysArray#_key#0;
+	_before params ["_beforePressed", "_beforeDoubled", "_beforeHolded", "_beforeUp", "_beforeTime"];
+
+	_last = EBA_keyHandler_keysArray#_key#1;
+	_last params ["_lastPressed", "_lastDoubled", "_lastHolded", "_lastUp", "_lastTime"];
+
+	_nowPressed = true;
+	_nowHolded = (_nowPressed && !_beforeUp);
+	_nowDoubled = [(_nowPressed && _beforeUp && !_lastDoubled && !_lastHolded && ((diag_tickTime - _lastTime) < 0.5)), true] select (_beforeDoubled && _nowHolded);
+	_nowUp = false;
+	_nowTime = diag_tickTime;
+
+	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
+	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
+
+	[EBA_keyHandler_keysArray] call EBA_fnc_processKeys;
+}];
+
+_display displayAddEventHandler ["KeyUp", {
+	_key = (_this#1);
+	if (_key > 255) exitWith {};
+	_before = EBA_keyHandler_keysArray#_key#0;
+	_last = EBA_keyHandler_keysArray#_key#1;
+
+	_nowPressed = false;
+	_nowDoubled = false;
+	_nowHolded = false;
+	_nowUp = true;
+	_nowTime = diag_tickTime;
+
+	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
+	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
+}];
+};

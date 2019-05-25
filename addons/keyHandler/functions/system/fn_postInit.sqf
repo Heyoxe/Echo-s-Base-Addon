@@ -38,3 +38,10 @@ _display displayAddEventHandler ["KeyUp", {
 		EBA_keyHandler_keyUpArray set [_key,0];
 	};
 }];*/
+_doubledKey = 0;
+([17,17,128,127] call BIS_fnc_consolidateArray) apply {
+	if (_x#1 isEqualTo 2) exitWith {
+		_doubledKey = _x#0;
+	};
+};
+_doubledKey
