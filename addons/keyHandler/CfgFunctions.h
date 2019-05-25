@@ -8,7 +8,7 @@ class CfgFunctions {
         class keyHandling {
             CPATH(keyHandler,keyHandling);
             FUNC_POST(processKeys);
-            FUNC_POST(parseConfig);
+            FUNC_POST(configSafe);
             FUNC_POST(profileSafe);
         };
     };

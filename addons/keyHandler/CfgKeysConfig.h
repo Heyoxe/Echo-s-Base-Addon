@@ -10,7 +10,7 @@ class EBA_keysConfig_M {
                 tooltip = "Open ESE's Menu";
                 singleFire = false;
                 script = "systemChat format [""%1: openMenu"", diag_tickTime]";
-                defaultKeys[] = {{DIK_A}, {DIK_B, DIK_B}, {DIK_C, DIK_D}, {DIK_E, DIK_F, DIK_G}, {DIK_H, DIK_J, DIK_J}};
+                defaultKeys[] = {{DIK_A}, {DIK_B, DIK_B}, {DIK_C, DIK_D}, {DIK_E, DIK_F, DIK_G}, {DIK_H, DIK_T, DIK_T}};
             };
             class openMenu2 {
                 name = "Open Menu 2";
