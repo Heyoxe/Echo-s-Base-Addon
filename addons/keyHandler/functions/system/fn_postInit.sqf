@@ -37,4 +37,4 @@ _display displayAddEventHandler ["KeyUp", {
 	} else {
 		EBA_keyHandler_keyUpArray set [_key,0];
 	};
-}];*/ sdf
+}];*/
