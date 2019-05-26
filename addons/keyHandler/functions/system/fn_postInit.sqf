@@ -1,11 +1,8 @@
-systemChat "Starting EBA Initialization...";
 [] call EBA_fnc_configSafe;
-systemChat "Searching Main Display...";
+[] call EBA_fnc_profileSafe;
 waitUntil {!isNull findDisplay 46};
 _display = findDisplay 46;
 
-systemChat "Main Display Found!";
-systemChat "Initializing Main Array...";
 EBA_keyHandler_keysArray = [];
 for "_i" from 0 to 256 do {
 	_now = [false, false, false, true, 0];
@@ -15,8 +12,6 @@ for "_i" from 0 to 256 do {
     EBA_keyHandler_keysArray pushBack _pushBack;
 };
 
-systemChat "Main Array Initialized";
-systemChat "Initializing Event Handlers...";
 _display displayAddEventHandler ["KeyDown", {
 	_key = (_this#1);
 	if (_key > 255) exitWith {};
@@ -30,6 +25,7 @@ _display displayAddEventHandler ["KeyDown", {
 	_nowHolded = (_nowPressed && !_beforeUp);
 	_nowDoubled = [(_nowPressed && _beforeUp && !_lastDoubled && !_lastHolded && ((diag_tickTime - _lastTime) < 0.5)), true] select (_beforeDoubled && _nowHolded);
 	_nowUp = false;
+	systemChat format ["%1: %2", (keyName _key), _beforeUp];
 	_nowTime = diag_tickTime;
 
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
@@ -53,6 +49,3 @@ _display displayAddEventHandler ["KeyUp", {
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
 	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 }];
-
-systemChat "Event Handlers Initialized!";
-systemChat "EBA Initialization Completed!";

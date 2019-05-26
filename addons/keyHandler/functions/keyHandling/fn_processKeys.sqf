@@ -21,7 +21,6 @@ _EBA_keyHandler_keyRegistery =
 	]
 ];
 */
-
 EBA_fnc_processKeys = {
 params ["_EBA_keyHandler_keysArray"];
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
@@ -45,16 +44,17 @@ _EBA_keyHandler_keysRegistery = (profileNamespace getVariable "EBA_keyHandler_ke
 			_doubledKeyIndex = (_consolidatedArray findIf {_x#1 isEqualTo 2});
 			_doubledKey = [{_consolidatedArray#_doubledKeyIndex#0}, {0}] select (_doubledKeyIndex isEqualTo -1);
 			_doubledKey = call _doubledKey;
+			_debug = [];
 			{
 				_key = _x;
 				_beforeUp = _EBA_keyHandler_keysArray#_key#1#3;
-				_tempNum = [(_tempNum + 1), _tempNum] select _beforePressed;
+				_tempNum = [_tempNum, (_tempNum + 1)] select _beforeUp;
+				_debug pushBack _key;
+				_debug pushBack _beforeUp;
 			} forEach _keys;
 			_extraConditions = [false, true] select (_tempNum != 0);
 			_tempNum = 0;
-			if ((count _keys) > 3) exitWith {
-				systemChat format ["%1: Too much keys, processing skipped...", diag_tickTime];
-			};
+			if ((count _keys) > 3) exitWith {};
 			{
 				_key = _x;
 				_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;

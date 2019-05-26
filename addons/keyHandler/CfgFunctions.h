@@ -4,12 +4,14 @@ class CfgFunctions {
         class system {
             CPATH(keyHandler,system);
             FUNC_POST(postInit);
+            FUNC(throw);
+            FUNC(warn)
         };
         class keyHandling {
             CPATH(keyHandler,keyHandling);
             FUNC_POST(processKeys);
-            FUNC_POST(configSafe);
-            FUNC_POST(profileSafe);
+            FUNC(configSafe);
+            FUNC(profileSafe);
         };
     };
 };
