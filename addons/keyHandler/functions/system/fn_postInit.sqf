@@ -30,7 +30,7 @@ _display displayAddEventHandler ["KeyDown", {
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
 	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 
-	[EBA_keyHandler_keysArray] call EBA_fnc_processKeys;
+	[EBA_keyHandler_keysArray] spawn EBA_fnc_processKeys;
 }];
 
 _display displayAddEventHandler ["KeyUp", {

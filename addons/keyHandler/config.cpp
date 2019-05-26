@@ -15,3 +15,6 @@ class CfgPatches {
 
 #include "CfgFunctions.h"
 #include "CfgKeysConfig.h"
+
+#include "GUIClass.h"
+
