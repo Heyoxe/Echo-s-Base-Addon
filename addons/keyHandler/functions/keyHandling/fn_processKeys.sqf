@@ -21,7 +21,6 @@ _EBA_keyHandler_keyRegistery =
 	]
 ];
 */
-EBA_fnc_processKeys = {
 params ["_EBA_keyHandler_keysArray"];
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 _EBA_keyHandler_keysRegistery = (profileNamespace getVariable "EBA_keyHandler_keyRegistery");
@@ -55,4 +54,3 @@ _EBA_keyHandler_keysRegistery = (profileNamespace getVariable "EBA_keyHandler_ke
 		} forEach _keyCombinaison;
 	} forEach _actionList;
 } forEach _keysConfigs;
-};

@@ -2,16 +2,13 @@
 _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 {
 	_config = _x;
-
-	_categoryName = getText (_config/"name");
-	if (_categoryName isEqualTo "") exitWith {
-		[ADDON, _config, "name"] call EBA_fnc_throw;
-	};
-
-	_categoryTooltip = getText (_config/"tooltip");
-	if (_categoryName isEqualTo "") exitWith {
-		[ADDON, _config, "tooltip"] call EBA_fnc_throw;
-	};
+	_textChecks = ["name", "tooltip"];
+	{
+		_checkedText = getText (_config/_x);
+		if (_checkedText isEqualTo "") exitWith {
+			[ADDON, _config, _x] call EBA_fnc_throw;
+		};
+	} forEach _textChecks;
 
 	_actionList = "true" configClasses (_config/"actions");
 	if (_actionList isEqualTo []) exitWith {
@@ -20,21 +17,17 @@ _keysConfigs = configProperties [configFile >> "EBA_keysConfig_M", "true"];
 
 	{
 		_action = _x;
-		_actionName = getText (_action/"name");
-		if (_actionName isEqualTo "") exitWith {
-			[ADDON, _config, "name"] call EBA_fnc_throw;
-		};
-		_actionName = getText (_action/"tooltip");
-		if (_actionName isEqualTo "") exitWith {
-			[ADDON, _config, "tooltip"] call EBA_fnc_throw;
-		};
-		_defaultKeys = getText (_action/"script");
-		if (_defaultKeys isEqualTo "") exitWith {
-			[ADDON, _config, "script"] call EBA_fnc_warn;
-		};
+		_textChecks = ["name", "tooltip", "script"];
+		{
+			_checkedText = getText (_action/_x);
+			if (_checkedText isEqualTo "") exitWith {
+				[ADDON, _action, _x] call EBA_fnc_throw;
+			};
+		} forEach _textChecks;
+
 		_defaultKeys = getArray (_action/"defaultKeys");
 		if (_defaultKeys isEqualTo []) exitWith {
-			[ADDON, _config, "defaultKeys"] call EBA_fnc_warn;
+			[ADDON, _action, "defaultKeys"] call EBA_fnc_warn;
 		};
 	} forEach _actionList;
 } forEach _keysConfigs;

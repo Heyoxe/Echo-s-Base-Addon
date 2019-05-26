@@ -25,7 +25,6 @@ _display displayAddEventHandler ["KeyDown", {
 	_nowHolded = (_nowPressed && !_beforeUp);
 	_nowDoubled = [(_nowPressed && _beforeUp && !_lastDoubled && !_lastHolded && ((diag_tickTime - _lastTime) < 0.5)), true] select (_beforeDoubled && _nowHolded);
 	_nowUp = false;
-	systemChat format ["%1: %2", (keyName _key), _beforeUp];
 	_nowTime = diag_tickTime;
 
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
