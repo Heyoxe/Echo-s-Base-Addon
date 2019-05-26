@@ -35,32 +35,20 @@ _EBA_keyHandler_keysRegistery = (profileNamespace getVariable "EBA_keyHandler_ke
 		_keyRegistery = (_EBA_keyHandler_keysRegistery#0) findIf {_x isEqualTo (format ["%1_%2", _addonName, _actionName])};
 		_keyRegistery = [{_EBA_keyHandler_keysRegistery#1#_keyRegistery}, {getArray (_action/"defaultKeys")}] select (_keyRegistery isEqualTo -1);
 		_keyCombinaison = call _keyRegistery;
-		_singleFire = [false, true] select (getNumber (_action/"singleFire"));
 		_script = (getText (_action/"script"));
 		{
 			_keys = _x;
-			_tempNum = 0;
 			_consolidatedArray = _keys call BIS_fnc_consolidateArray;
 			_doubledKeyIndex = (_consolidatedArray findIf {_x#1 isEqualTo 2});
 			_doubledKey = [{_consolidatedArray#_doubledKeyIndex#0}, {0}] select (_doubledKeyIndex isEqualTo -1);
 			_doubledKey = call _doubledKey;
-			_debug = [];
-			{
-				_key = _x;
-				_beforeUp = _EBA_keyHandler_keysArray#_key#1#3;
-				_tempNum = [_tempNum, (_tempNum + 1)] select _beforeUp;
-				_debug pushBack _key;
-				_debug pushBack _beforeUp;
-			} forEach _keys;
-			_extraConditions = [false, true] select (_tempNum != 0);
 			_tempNum = 0;
 			if ((count _keys) > 3) exitWith {};
 			{
 				_key = _x;
 				_nowPressed = _EBA_keyHandler_keysArray#_key#0#0;
 				_nowDoubled = _EBA_keyHandler_keysArray#_key#0#1;
-				_baseConditions = [_nowPressed, (_nowPressed && _nowDoubled)] select (_doubledKey isEqualTo _key);
-				_conditions = [_baseConditions, (_baseConditions && _extraConditions)] select _singleFire;
+				_conditions = [_nowPressed, (_nowPressed && _nowDoubled)] select (_doubledKey isEqualTo _key);
 				_tempNum = [_tempNum, (_tempNum + 1)] select _conditions;
 			} forEach _keys;
 			[] call (compile (["", _script] select (_tempNum isEqualTo (count _keys))));
