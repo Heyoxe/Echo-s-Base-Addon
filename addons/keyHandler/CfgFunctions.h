@@ -12,6 +12,15 @@ class CfgFunctions {
             FUNC(processKeys);
             FUNC(configSafe);
             FUNC(profileSafe);
+            FUNC(defaultKeys);
+            FUNC(deleteKey);
         };
+        class GUI {
+            CPATH(keyHandler,gui);
+            FUNC(populateTable);
+            FUNC(comboBox);
+            FUNC(createDialog);
+            FUNC(populateList);
+        }
     };
 };

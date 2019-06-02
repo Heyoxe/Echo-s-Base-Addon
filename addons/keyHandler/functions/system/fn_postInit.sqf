@@ -48,3 +48,5 @@ _display displayAddEventHandler ["KeyUp", {
 	_now = [_nowPressed, _nowDoubled, _nowHolded, _nowUp, _nowTime];
 	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 }];
+
+player addAction ["[DEBUG] Open Menu 2", {[0, ""] call EBA_fnc_createDialog}];
