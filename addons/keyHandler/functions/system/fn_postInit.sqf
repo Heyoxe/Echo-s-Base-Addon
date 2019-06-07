@@ -1,5 +1,3 @@
-[] call EBA_fnc_configSafe;
-[] call EBA_fnc_profileSafe;
 waitUntil {!isNull findDisplay 46};
 _display = findDisplay 46;
 
@@ -49,4 +47,12 @@ _display displayAddEventHandler ["KeyUp", {
 	EBA_keyHandler_keysArray set [_key, [_now, _before, _last]];
 }];
 
-player addAction ["[DEBUG] Open Menu 2", {[0, ""] call EBA_fnc_createDialog}];
+[] spawn {
+	while {true} do {
+		waitUntil {!isNull (findDisplay 49)};
+		_display = findDisplay 49;
+		_EBA_Configure = _display ctrlCreate ["EBAControls", 1600]; 
+		_EBA_Configure ctrlCommit 0; 
+		waitUntil {isNull (findDisplay 49)};
+	};
+};

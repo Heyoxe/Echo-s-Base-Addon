@@ -1,8 +1,8 @@
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 
 class EBA_keysConfig_M {
-    class ESE_keysConfig {
-        name = "Echo's Sandbox Everywhere";
+    class EBA_keysConfig {
+        name = "Echo's Base Addon";
         tooltip = "Echo's mod bla bla bla";
         class actions {
             class openMenu {

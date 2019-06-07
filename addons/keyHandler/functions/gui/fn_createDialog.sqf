@@ -55,14 +55,14 @@ switch _mode do {
 			_KeyList ctrlCommit 0;
 			[_KeyList, _addonName, _actionName] call EBA_fnc_populateList;
 
-			_SpecialKeysContainer = _display ctrlCreate ["RscListBox", 2213];
+			_SpecialKeysContainer = _display ctrlCreate ["RscListBox", 21111];
 			_SpecialKeysContainer ctrlSetPosition [0.587656 * safezoneW + safezoneX, 0.335 * safezoneH + safezoneY, 0.139219 * safezoneW, 0.363 * safezoneH];
 			_SpecialKeysContainer ctrlCommit 0;
 
 			_Default = _display ctrlCreate ["RscButton", 2209];
 			_Default ctrlSetPosition [0.273125 * safezoneW + safezoneX, 0.698 * safezoneH + safezoneY, 0.0773437 * safezoneW, 0.022 * safezoneH];
 			_Default ctrlSetText "Default";
-			_call = format ["[0, """", """"] call EBA_fnc_createDialog; [1, %1, %2] spawn EBA_fnc_defaultKeys", str _addonName, str _actionName];
+			_call = format ["[1, %1, %2] spawn EBA_fnc_defaultKeys; [0, """", """"] call EBA_fnc_createDialog", str _addonName, str _actionName];
 			_Default ctrlSetEventHandler ["ButtonClick", _call];
 			_Default ctrlCommit 0;
 
@@ -85,7 +85,45 @@ switch _mode do {
 			_Ok ctrlSetEventHandler ["ButtonClick", "saveProfileNamespace; closeDialog 0; [0, """", """"] call EBA_fnc_createDialog"];
 			_Ok ctrlCommit 0;
 
+			EBA_var_updateKeysArray = [diag_tickTime];
+			EBA_var_updateKeysArray_temp = [];
+
+			for "_i" from 0 to 255 do {
+				EBA_var_updateKeysArray_temp pushBack true;
+			};
+
+			_display displayAddEventHandler ["KeyDown", {
+				private ["_key", "_update"];
+				_key = (_this#1);
+				if (_key > 255) exitWith {};
+				_update = EBA_var_updateKeysArray;
+				if !((EBA_var_updateKeysArray#0) isEqualTo diag_tickTime) then {
+					EBA_var_updateKeysArray set [0, diag_tickTime];
+				};
+				if (EBA_var_updateKeysArray_temp#_key) then {
+					_update pushBack _key;
+					EBA_var_updateKeysArray_temp set [_key, false]; 
+					EBA_var_updateKeysArray = _update;
+				};
+			}];
+
+			_display displayAddEventHandler ["keyUp", {
+				private ["_key", "_update"];
+				_key = (_this#1);
+				if (_key > 255) exitWith {};
+				EBA_var_updateKeysArray_temp set [_key, true]; 
+			}];
+
+			[] spawn {
+				while {!(isNull ((findDisplay 19943) displayCtrl 21111))} do {
+					if (((diag_tickTime - (EBA_var_updateKeysArray#0) > 0.5) && ((count EBA_var_updateKeysArray) > 1)) || ((count EBA_var_updateKeysArray) isEqualTo 4)) then {
+						[EBA_var_updateKeysArray] spawn EBA_fnc_addKey;
+						EBA_var_updateKeysArray = [diag_tickTime];
+					};
+				};
+			};
 			(findDisplay 19943) setVariable ["EBA_KeyList", _KeyList];
+			(findDisplay 19943) setVariable ["EBA_KeyList_Info", [_addonName, _actionName]];
 		};
 	};
 	case 0: {

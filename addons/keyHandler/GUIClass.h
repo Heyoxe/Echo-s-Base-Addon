@@ -5,7 +5,9 @@ class RscCombo;
 class RscButton;
 class RscStructuredText;
 class RscListBox;
+class RscStandardDisplay;
 
+/*
 class EBATitle: RscText {
 	colorBackground[] = {
 		"(profilenamespace getvariable ['GUI_BCG_RGB_R',0.13])",
@@ -14,9 +16,14 @@ class EBATitle: RscText {
 		1
 	};
 };
+*/
+class EBATitle: RscText {
+	colorBackground[] = {0.1647,0.3725,0.6431,1};
+};
 
-class EBAStructuredText: RscStructuredText {
+class EBAStructuredText: RscText {
 	h = 0.03 * safezoneH;
+	style = 0;
 	sizeEx="(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
 };
 
@@ -101,12 +108,29 @@ class EBATable: RscListBox
     rowHeight = 0.03 * safezoneH;
 };
 
+class EBAControls: RscButton {
+	x = 1 * (((safezoneW / safezoneH) min 1.2) / 40) + (safezoneX);
+	y = 1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25);
+	w = 15 * (((safezoneW / safezoneH) min 1.2) / 40);
+	h = 1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25);
+	colorBackground[] = {0.1647,0.3725,0.6431,1};
+	colorBackgroundActive[] = {0.1647,0.3725,0.6431,1};
+	colorFocused[] = {0.1647,0.3725,0.6431,1};
+	text = "Configure Echo's Controls"
+	action = "ctrlActivate ((findDisplay 49) displayCtrl 2); [0, """"] call EBA_fnc_createDialog"
+    font = "PuristaMedium";
+    shadow = 0;
+};
+
 class EBAConfigure 
 {
 	idd = 19943;
 	class Controls {};
 };
 
+class RscDisplayInterrupt: RscStandardDisplay {
+	class EBAConfigure: EBAControls {};
+}
 /* #Jotexo
 $[
 	1.063,

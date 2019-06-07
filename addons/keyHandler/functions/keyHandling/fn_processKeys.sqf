@@ -1,23 +1,10 @@
 /*
-_EBA_keyHandler_keyRegistery = 
-[
-	[
-		"ESE_keysConfig_openMenu",
-		"ESE_keysConfig_openMenu2"
-	], 
-	[
-		[
-			[17, 18],
-			[27]
-		],
-		[
-			[11, 40, 32]
-		]
-	]
-];
 
-profileNamespace setVariable ["EBA_keyHandler_keyRegistery", _EBA_keyHandler_keyRegistery];
-saveProfileNamespace;
+In case of corrupted Registery, you can completely reset it with: 
+
+	profileNamespace setVariable ["EBA_keyHandler_keyRegistery", [[], []]];
+	saveProfileNamespace;
+
 */
 params ["_EBA_keyHandler_keysArray"];
 if (dialog) exitWith {};

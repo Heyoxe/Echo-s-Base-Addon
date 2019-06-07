@@ -18,3 +18,4 @@ class CfgPatches {
 
 #include "GUIClass.h"
 
+//BIS_fnc_shutdown;
