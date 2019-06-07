@@ -17,5 +17,3 @@ class CfgPatches {
 #include "CfgKeysConfig.h"
 
 #include "GUIClass.h"
-
-//BIS_fnc_shutdown;

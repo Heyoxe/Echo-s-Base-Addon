@@ -69,5 +69,11 @@ _actionList = "true" configClasses (_config/"actions");
 
 	_call = format ["[1, %1, %2] call EBA_fnc_createDialog", str _addonName, str _actionName];
 	_columnRow ctrlSetTooltip _actionTooltip;
+	_disabled = [false, true] select (getNumber (_action/"disable"));
+	if (_disabled) then {
+		_columnAction ctrlSetTextColor [0.5, 0.5, 0.5, 1];
+		_columnAssignedKeys ctrlSetTextColor [0.5, 0.5, 0.5, 1];	
+		_call = "";
+	};
 	_columnRow ctrlSetEventHandler ["ButtonClick", _call];
 } forEach _actionList;
